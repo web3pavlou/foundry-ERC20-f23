@@ -133,7 +133,7 @@ dotenv
 
 ---
 
-# zkSync (optional)
+## zkSync (optional)
 ```
 DEFAULT_ZKSYNC_LOCAL_KEY=0xabc123...deadbeef
 ZKSYNC_SEPOLIA_RPC_URL=https://sepolia.era.zksync.dev

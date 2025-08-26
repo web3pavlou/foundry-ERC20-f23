@@ -4,6 +4,7 @@ on: workflow_dispatch
 
 env:
   FOUNDRY_PROFILE: ci
+  FOUNDRY_FMT_LINE_LENGTH: 160
 
 jobs:
   check:

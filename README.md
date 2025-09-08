@@ -40,7 +40,7 @@ This project ships **two ERC-20 tokens**:
 ##  Quickstart
 ```bash
 # Clone
-git clone https://github.com/web3pavlou/foundry-erc20-f23.git
+git clone https://github.com/web3pavlou/foundry-erc20-f23
 cd foundry-erc20-f23
 
 # Install dependencies (OpenZeppelin)

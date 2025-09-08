@@ -43,14 +43,11 @@ This project ships **two ERC-20 tokens**:
 git clone https://github.com/web3pavlou/foundry-erc20-f23
 cd foundry-erc20-f23
 
-# Install dependencies (OpenZeppelin)
-forge install OpenZeppelin/openzeppelin-contracts@v4.9.0
-
 # Build
 forge build 
 
 # Run all tests
-forge test -vv`
+forge test -vv
 ```
 ---
 

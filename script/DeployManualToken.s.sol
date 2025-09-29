@@ -9,11 +9,7 @@ contract DeployManualToken is Script {
 
     function run() external returns (ManualToken) {
         vm.startBroadcast();
-        ManualToken manualToken = new ManualToken(
-            INITIAL_SUPPLY,
-            "ManualToken",
-            "MTK"
-        );
+        ManualToken manualToken = new ManualToken(INITIAL_SUPPLY, "ManualToken", "MTK");
         vm.stopBroadcast();
         return manualToken;
     }

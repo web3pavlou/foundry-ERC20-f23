@@ -15,12 +15,7 @@ error ManualToken__InsufficientBalance();
 error ManualToken__InsufficientAllowance();
 
 interface ITokenApprovalRecipient {
-    function receiveApproval(
-        address _from,
-        uint256 _value,
-        address _token,
-        bytes calldata _extraData
-    ) external;
+    function receiveApproval(address _from, uint256 _value, address _token, bytes calldata _extraData) external;
 }
 
 contract ManualToken is IERC20, IERC20Metadata {
@@ -37,11 +32,7 @@ contract ManualToken is IERC20, IERC20Metadata {
     /* Events */
     event Burn(address indexed from, uint256 value);
 
-    constructor(
-        uint256 initialSupply,
-        string memory tokenName,
-        string memory tokenSymbol
-    ) {
+    constructor(uint256 initialSupply, string memory tokenName, string memory tokenSymbol) {
         name = tokenName;
         symbol = tokenSymbol;
         _mint(msg.sender, initialSupply * (10 ** uint256(DECIMALS)));
@@ -49,46 +40,27 @@ contract ManualToken is IERC20, IERC20Metadata {
 
     /* Functions */
     // --- Non-standard convenience: approve and notify ---
-    function approveAndCall(
-        address spender,
-        uint256 value,
-        bytes calldata extraData
-    ) external returns (bool) {
+    function approveAndCall(address spender, uint256 value, bytes calldata extraData) external returns (bool) {
         if (spender == address(0)) revert ManualToken__ApproveToZeroAddress();
         if (spender.code.length == 0) revert ManualToken__SpenderHasNoCode();
         _approve(msg.sender, spender, value);
-        ITokenApprovalRecipient(spender).receiveApproval(
-            msg.sender,
-            value,
-            address(this),
-            extraData
-        );
+        ITokenApprovalRecipient(spender).receiveApproval(msg.sender, value, address(this), extraData);
         // If receiveApproval reverts, the whole tx reverts (approval undone)
         return true;
     }
 
     // --- Core ERC-20 ---
-    function transfer(
-        address to,
-        uint256 value
-    ) external override returns (bool) {
+    function transfer(address to, uint256 value) external override returns (bool) {
         _transfer(msg.sender, to, value);
         return true;
     }
 
-    function approve(
-        address spender,
-        uint256 value
-    ) external override returns (bool) {
+    function approve(address spender, uint256 value) external override returns (bool) {
         _approve(msg.sender, spender, value);
         return true;
     }
 
-    function transferFrom(
-        address from,
-        address to,
-        uint256 value
-    ) external override returns (bool) {
+    function transferFrom(address from, address to, uint256 value) external override returns (bool) {
         uint256 current = _allowances[from][msg.sender];
         if (current != type(uint256).max) {
             if (current < value) revert ManualToken__InsufficientAllowance();
@@ -167,10 +139,7 @@ contract ManualToken is IERC20, IERC20Metadata {
         return _balances[account];
     }
 
-    function allowance(
-        address owner,
-        address spender
-    ) public view override returns (uint256) {
+    function allowance(address owner, address spender) public view override returns (uint256) {
         return _allowances[owner][spender];
     }
 

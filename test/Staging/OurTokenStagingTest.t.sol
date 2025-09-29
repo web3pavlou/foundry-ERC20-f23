@@ -18,8 +18,7 @@ contract OurTokenStagingTest is Test {
     //////////////////////////////////////////////////////////////*/
     uint256 internal constant INITIAL_SUPPLY = 1_000 ether;
     uint256 internal constant SEPOLIA_CHAIN_ID = 11155111;
-    bytes32 internal constant TRANSFER_SIG =
-        keccak256("Transfer(address,address,uint256)");
+    bytes32 internal constant TRANSFER_SIG = keccak256("Transfer(address,address,uint256)");
 
     /*//////////////////////////////////////////////////////////////
                             STATE VARIABLES
@@ -54,17 +53,16 @@ contract OurTokenStagingTest is Test {
         Vm.Log[] memory entries = vm.getRecordedLogs();
         for (uint256 i; i < entries.length; ++i) {
             if (
-                entries[i].emitter == address(ourToken) &&
-                entries[i].topics.length == 3 &&
-                entries[i].topics[0] == TRANSFER_SIG &&
-                entries[i].topics[1] == bytes32(0) // from == address(0)
+                entries[i].emitter == address(ourToken) && entries[i].topics.length == 3
+                    && entries[i].topics[0] == TRANSFER_SIG && entries[i].topics[1] == bytes32(0) // from == address(0)
             ) {
                 deployer = address(uint160(uint256(entries[i].topics[2]))); // to
                 break;
             }
         }
-        if (deployer == address(0))
+        if (deployer == address(0)) {
             revert OurTokenStagingTest__MintEventNotFound();
+        }
 
         vm.label(deployer, "deployer");
         vm.label(address(ourToken), "OurToken");
@@ -73,16 +71,8 @@ contract OurTokenStagingTest is Test {
     /* ---------------- Staging checks (no unit duplication) ----------------- */
 
     function testDeploymentMintsInitialSupply() external view onSepoliaOrSkip {
-        assertEq(
-            ourToken.totalSupply(),
-            INITIAL_SUPPLY,
-            "totalSupply mismatch"
-        );
-        assertEq(
-            ourToken.balanceOf(deployer),
-            INITIAL_SUPPLY,
-            "deployer balance"
-        );
+        assertEq(ourToken.totalSupply(), INITIAL_SUPPLY, "totalSupply mismatch");
+        assertEq(ourToken.balanceOf(deployer), INITIAL_SUPPLY, "deployer balance");
         assertEq(ourToken.name(), "OurToken", "name");
         assertEq(ourToken.symbol(), "OT", "symbol");
     }
@@ -93,11 +83,7 @@ contract OurTokenStagingTest is Test {
         // Deployer sets fresh allowance via approve
         vm.prank(deployer);
         ourToken.approve(spender, 5 ether);
-        assertEq(
-            ourToken.allowance(deployer, spender),
-            5 ether,
-            "allowance grant failed"
-        );
+        assertEq(ourToken.allowance(deployer, spender), 5 ether, "allowance grant failed");
 
         // Spender pulls part of the allowance
         vm.startPrank(spender);
@@ -105,11 +91,7 @@ contract OurTokenStagingTest is Test {
         vm.stopPrank();
 
         assertEq(ourToken.balanceOf(spender), 2 ether, "transferFrom failed");
-        assertEq(
-            ourToken.allowance(deployer, spender),
-            3 ether,
-            "allowance not reduced"
-        );
+        assertEq(ourToken.allowance(deployer, spender), 3 ether, "allowance not reduced");
     }
 
     function testRevertWhenAllowanceTooLow() external onSepoliaOrSkip {

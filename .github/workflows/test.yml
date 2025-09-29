@@ -2,6 +2,7 @@ name: test
 
 on: workflow_dispatch
 
+# Global environment variables
 env:
   FOUNDRY_PROFILE: ci
   FOUNDRY_FMT_LINE_LENGTH: 160

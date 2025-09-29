@@ -15,8 +15,7 @@ contract ManualTokenStagingTest is Test {
     //////////////////////////////////////////////////////////////*/
     uint256 internal constant INITIAL_SUPPLY_TOKENS = 1_000; // must match script
     uint256 internal constant SEPOLIA_CHAIN_ID = 11155111;
-    bytes32 internal constant TRANSFER_SIG =
-        keccak256("Transfer(address,address,uint256)");
+    bytes32 internal constant TRANSFER_SIG = keccak256("Transfer(address,address,uint256)");
 
     /*//////////////////////////////////////////////////////////////
                               STATE VARIABLES
@@ -51,10 +50,8 @@ contract ManualTokenStagingTest is Test {
         Vm.Log[] memory entries = vm.getRecordedLogs();
         for (uint256 i; i < entries.length; ++i) {
             if (
-                entries[i].emitter == address(token) &&
-                entries[i].topics.length == 3 &&
-                entries[i].topics[0] == TRANSFER_SIG &&
-                entries[i].topics[1] == bytes32(0) // from == address(0)
+                entries[i].emitter == address(token) && entries[i].topics.length == 3
+                    && entries[i].topics[0] == TRANSFER_SIG && entries[i].topics[1] == bytes32(0) // from == address(0)
             ) {
                 deployer = address(uint160(uint256(entries[i].topics[2]))); // to
                 break;
@@ -72,15 +69,10 @@ contract ManualTokenStagingTest is Test {
 
     function testDeployment_MintsInitialSupply() external view onSepoliaOrSkip {
         uint8 decimals = token.decimals();
-        uint256 expectedSupply = INITIAL_SUPPLY_TOKENS *
-            (10 ** uint256(decimals));
+        uint256 expectedSupply = INITIAL_SUPPLY_TOKENS * (10 ** uint256(decimals));
 
         assertEq(token.totalSupply(), expectedSupply, "totalSupply mismatch");
-        assertEq(
-            token.balanceOf(deployer),
-            expectedSupply,
-            "deployer balance mismatch"
-        );
+        assertEq(token.balanceOf(deployer), expectedSupply, "deployer balance mismatch");
         assertEq(token.name(), "ManualToken", "name mismatch");
         assertEq(token.symbol(), "MTK", "symbol mismatch");
     }
@@ -91,22 +83,14 @@ contract ManualTokenStagingTest is Test {
         // Grant allowance
         vm.prank(deployer);
         token.approve(spender, 5 ether);
-        assertEq(
-            token.allowance(deployer, spender),
-            5 ether,
-            "allowance grant failed"
-        );
+        assertEq(token.allowance(deployer, spender), 5 ether, "allowance grant failed");
 
         // Spend part of allowance
         vm.prank(spender);
         token.transferFrom(deployer, spender, 2 ether);
 
         assertEq(token.balanceOf(spender), 2 ether, "transferFrom failed");
-        assertEq(
-            token.allowance(deployer, spender),
-            3 ether,
-            "allowance not reduced"
-        );
+        assertEq(token.allowance(deployer, spender), 3 ether, "allowance not reduced");
     }
 
     function test_RevertWhen_AllowanceTooLow() external onSepoliaOrSkip {

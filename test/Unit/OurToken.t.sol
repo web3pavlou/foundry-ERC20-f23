@@ -31,11 +31,7 @@ contract OurTokenTest is Test, ZkSyncChainChecker {
                                  EVENTS
     //////////////////////////////////////////////////////////////*/
     event Transfer(address indexed from, address indexed to, uint256 value);
-    event Approval(
-        address indexed owner,
-        address indexed sender,
-        uint256 value
-    );
+    event Approval(address indexed owner, address indexed sender, uint256 value);
 
     /*//////////////////////////////////////////////////////////////
                                 SETUP
@@ -78,11 +74,7 @@ contract OurTokenTest is Test, ZkSyncChainChecker {
     }
 
     function testTotalSupplyEqualsInitialSupply() public {
-        assertEq(
-            ourToken.totalSupply(),
-            testExpectedInitialSupply(),
-            "unexpected totalSupply"
-        );
+        assertEq(ourToken.totalSupply(), testExpectedInitialSupply(), "unexpected totalSupply");
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -105,11 +97,7 @@ contract OurTokenTest is Test, ZkSyncChainChecker {
         bool success = ourToken.transfer(alice, amount);
 
         assertTrue(success, "transfer was unsuccessful");
-        assertEq(
-            ourToken.balanceOf(bob),
-            BOB_STARTING_AMOUNT - amount,
-            "bob balance is not enough"
-        );
+        assertEq(ourToken.balanceOf(bob), BOB_STARTING_AMOUNT - amount, "bob balance is not enough");
         assertEq(ourToken.balanceOf(alice), amount, "alice balance is wrong");
     }
 
@@ -134,16 +122,8 @@ contract OurTokenTest is Test, ZkSyncChainChecker {
         vm.prank(bob);
         ourToken.transfer(bob, 123);
 
-        assertEq(
-            ourToken.balanceOf(bob),
-            balanceBefore,
-            "Bob balance should not change"
-        );
-        assertEq(
-            ourToken.totalSupply(),
-            totalSupplyBefore,
-            "Supply should not change"
-        );
+        assertEq(ourToken.balanceOf(bob), balanceBefore, "Bob balance should not change");
+        assertEq(ourToken.totalSupply(), totalSupplyBefore, "Supply should not change");
     }
 
     function testZeroAmountTransferEmitsEventNoBalanceChange() public {
@@ -156,11 +136,7 @@ contract OurTokenTest is Test, ZkSyncChainChecker {
         ourToken.transfer(alice, 0);
 
         assertEq(ourToken.balanceOf(bob), bobBefore, "bob balance has changed");
-        assertEq(
-            ourToken.balanceOf(alice),
-            aliceBefore,
-            "alice balance has changed"
-        );
+        assertEq(ourToken.balanceOf(alice), aliceBefore, "alice balance has changed");
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -189,21 +165,9 @@ contract OurTokenTest is Test, ZkSyncChainChecker {
         vm.prank(alice);
         ourToken.transferFrom(bob, evan, transferAmount);
 
-        assertEq(
-            ourToken.balanceOf(bob),
-            BOB_STARTING_AMOUNT - transferAmount,
-            "bob balance is wrong"
-        );
-        assertEq(
-            ourToken.balanceOf(evan),
-            transferAmount,
-            "evan balance is wrong"
-        );
-        assertEq(
-            ourToken.allowance(bob, alice),
-            initialAllowance - transferAmount,
-            "allowance not decreased"
-        );
+        assertEq(ourToken.balanceOf(bob), BOB_STARTING_AMOUNT - transferAmount, "bob balance is wrong");
+        assertEq(ourToken.balanceOf(evan), transferAmount, "evan balance is wrong");
+        assertEq(ourToken.allowance(bob, alice), initialAllowance - transferAmount, "allowance not decreased");
     }
 
     function testRevertWhenTransferFromHasInsufficientAllowance() public {
@@ -282,29 +246,14 @@ contract OurTokenTest is Test, ZkSyncChainChecker {
         bool success = ourToken.transfer(to, amount);
         assertTrue(success, "transfer was unsuccessful");
 
-        assertEq(
-            ourToken.balanceOf(bob),
-            bobBefore - amount,
-            "bob balance mismatch"
-        );
-        assertEq(
-            ourToken.balanceOf(to),
-            toBefore + amount,
-            "to balance mismatch"
-        );
+        assertEq(ourToken.balanceOf(bob), bobBefore - amount, "bob balance mismatch");
+        assertEq(ourToken.balanceOf(to), toBefore + amount, "to balance mismatch");
     }
 
-    function testFuzzApproveAndTransferFrom(
-        uint96 approveAmount,
-        uint96 spendAmount
-    ) public {
-        approveAmount = uint96(
-            bound(uint256(approveAmount), 0, type(uint96).max)
-        );
+    function testFuzzApproveAndTransferFrom(uint96 approveAmount, uint96 spendAmount) public {
+        approveAmount = uint96(bound(uint256(approveAmount), 0, type(uint96).max));
         spendAmount = uint96(bound(uint256(spendAmount), 0, approveAmount));
-        spendAmount = uint96(
-            bound(uint256(spendAmount), 0, BOB_STARTING_AMOUNT)
-        );
+        spendAmount = uint96(bound(uint256(spendAmount), 0, BOB_STARTING_AMOUNT));
 
         vm.prank(bob);
         ourToken.approve(alice, approveAmount);
@@ -315,29 +264,13 @@ contract OurTokenTest is Test, ZkSyncChainChecker {
         vm.prank(alice);
         ourToken.transferFrom(bob, evan, spendAmount);
 
-        assertEq(
-            ourToken.balanceOf(bob),
-            bobBefore - spendAmount,
-            "bob balance mismatch"
-        );
-        assertEq(
-            ourToken.balanceOf(evan),
-            evanBefore + spendAmount,
-            "evan balance mismatch"
-        );
+        assertEq(ourToken.balanceOf(bob), bobBefore - spendAmount, "bob balance mismatch");
+        assertEq(ourToken.balanceOf(evan), evanBefore + spendAmount, "evan balance mismatch");
 
         if (approveAmount == type(uint256).max) {
-            assertEq(
-                ourToken.allowance(bob, alice),
-                type(uint256).max,
-                "infinite allowance decreased"
-            );
+            assertEq(ourToken.allowance(bob, alice), type(uint256).max, "infinite allowance decreased");
         } else {
-            assertEq(
-                ourToken.allowance(bob, alice),
-                approveAmount - spendAmount,
-                "allowance mismatch"
-            );
+            assertEq(ourToken.allowance(bob, alice), approveAmount - spendAmount, "allowance mismatch");
         }
     }
 }

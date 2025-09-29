@@ -15,12 +15,7 @@ error ManualToken__SpenderHasNoCode();
 contract ApprovalSink {
     event GotApproval(address indexed sender, uint256 value, address token);
 
-    function receiveApproval(
-        address from,
-        uint256 value,
-        address token,
-        bytes calldata /*extra*/
-    ) external {
+    function receiveApproval(address from, uint256 value, address token, bytes calldata /*extra*/ ) external {
         emit GotApproval(from, value, token);
 
         // Spend half the allowance immediately – exercises re-entrancy window.
@@ -87,11 +82,7 @@ contract ManualTokenTest is Test {
 
         // Sink spends half inside callback, half remains
         assertEq(token.balanceOf(address(sink)), allowanceAmt / 2);
-        assertEq(
-            token.allowance(alice, address(sink)),
-            allowanceAmt / 2,
-            "allowance should shrink"
-        );
+        assertEq(token.allowance(alice, address(sink)), allowanceAmt / 2, "allowance should shrink");
     }
 
     /* ------------------- burn / burnFrom ---------------------------------- */
@@ -102,11 +93,7 @@ contract ManualTokenTest is Test {
         vm.prank(alice);
         token.burn(burnAmt);
 
-        assertEq(
-            token.totalSupply(),
-            units(INITIAL_SUPPLY_TOKENS) - burnAmt,
-            "supply mismatch"
-        );
+        assertEq(token.totalSupply(), units(INITIAL_SUPPLY_TOKENS) - burnAmt, "supply mismatch");
         assertEq(token.balanceOf(alice), 990 ether);
     }
 
@@ -151,11 +138,7 @@ contract ManualTokenTest is Test {
         vm.prank(alice);
         token.transfer(bob, amount);
 
-        assertEq(
-            token.balanceOf(alice) + token.balanceOf(bob),
-            1000 ether,
-            "conservation failed"
-        );
+        assertEq(token.balanceOf(alice) + token.balanceOf(bob), 1000 ether, "conservation failed");
     }
 
     /// @dev Fuzz approve/transferFrom path with bounded amounts

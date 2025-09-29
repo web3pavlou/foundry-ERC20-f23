@@ -1,0 +1,1 @@
+{"abi":[{"type":"function","name":"mint","inputs":[{"name":"","type":"address","internalType":"address"},{"name":"","type":"uint256","internalType":"uint256"}],"outputs":[],"stateMutability":"nonpayable"}],"storageLayout":{"storage":[],"types":{}},"userdoc":{},"devdoc":{},"factoryDependencies":{},"factoryDependenciesUnlinked":[],"id":33}

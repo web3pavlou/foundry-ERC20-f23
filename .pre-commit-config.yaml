@@ -1,0 +1,20 @@
+repos:
+  - repo: local
+    hooks:
+      - id: forge-fmt-check
+        name: forge fmt --check
+        language: system
+        pass_filenames: false
+        entry: bash -lc 'forge fmt --check'
+
+      - id: disallow-multiline-asserts
+        name: disallow multi-line asserts
+        language: system
+        pass_filenames: false
+        entry: bash -lc 'off=$(rg -nP "assert\\w*\\s*\\([^)]*\\n" test || true); if [ -n "$off" ]; then echo "$off"; exit 1; fi'
+
+      - id: forge-test
+        name: forge test -q
+        language: system
+        pass_filenames: false
+        entry: bash -lc 'forge test -q'
